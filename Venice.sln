@@ -1,0 +1,63 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36327.8 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Venice.Api", "Venice.Api\Venice.Api.csproj", "{36A033AA-53F6-4A59-A8EE-D70D8E19956E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Api", "1.Api", "{93B4AAB7-A239-45EA-AE37-2891FB52D2E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Domain", "3.Domain", "{650D7CFC-9566-4BBE-A5FA-8F2F339D3D55}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Application", "2.Application", "{DC00FD74-61E0-4F7A-9EFA-2741C5C7693C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.Infrastructure", "4.Infrastructure", "{0A50C865-3D90-436F-A6B9-E7B495597066}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Venice.Domain", "Venice.Domain\Venice.Domain.csproj", "{8D52189F-FE97-4DC3-8C74-C487B7A285D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Venice.Application", "Venice.Application\Venice.Application.csproj", "{803CFABA-9AFC-4E7E-B302-E2DCE482BE4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Venice.Infra", "Venice.Infra\Venice.Infra.csproj", "{BD2EEE47-F3AA-4236-BB27-D56EC6FAC261}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{36A033AA-53F6-4A59-A8EE-D70D8E19956E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36A033AA-53F6-4A59-A8EE-D70D8E19956E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36A033AA-53F6-4A59-A8EE-D70D8E19956E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36A033AA-53F6-4A59-A8EE-D70D8E19956E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D52189F-FE97-4DC3-8C74-C487B7A285D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D52189F-FE97-4DC3-8C74-C487B7A285D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D52189F-FE97-4DC3-8C74-C487B7A285D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D52189F-FE97-4DC3-8C74-C487B7A285D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{803CFABA-9AFC-4E7E-B302-E2DCE482BE4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{803CFABA-9AFC-4E7E-B302-E2DCE482BE4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{803CFABA-9AFC-4E7E-B302-E2DCE482BE4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{803CFABA-9AFC-4E7E-B302-E2DCE482BE4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD2EEE47-F3AA-4236-BB27-D56EC6FAC261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD2EEE47-F3AA-4236-BB27-D56EC6FAC261}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD2EEE47-F3AA-4236-BB27-D56EC6FAC261}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD2EEE47-F3AA-4236-BB27-D56EC6FAC261}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{36A033AA-53F6-4A59-A8EE-D70D8E19956E} = {93B4AAB7-A239-45EA-AE37-2891FB52D2E1}
+		{93B4AAB7-A239-45EA-AE37-2891FB52D2E1} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{650D7CFC-9566-4BBE-A5FA-8F2F339D3D55} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{DC00FD74-61E0-4F7A-9EFA-2741C5C7693C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{0A50C865-3D90-436F-A6B9-E7B495597066} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{8D52189F-FE97-4DC3-8C74-C487B7A285D0} = {650D7CFC-9566-4BBE-A5FA-8F2F339D3D55}
+		{803CFABA-9AFC-4E7E-B302-E2DCE482BE4D} = {DC00FD74-61E0-4F7A-9EFA-2741C5C7693C}
+		{BD2EEE47-F3AA-4236-BB27-D56EC6FAC261} = {0A50C865-3D90-436F-A6B9-E7B495597066}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3BD07187-52F1-493F-8F48-AB8446CB8F0E}
+	EndGlobalSection
+EndGlobal
