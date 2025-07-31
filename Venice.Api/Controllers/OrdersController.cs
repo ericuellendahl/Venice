@@ -17,6 +17,9 @@ public class OrdersController(IOrderService _orderService) : ControllerBase
     {
         try
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var order = await _orderService.CreateOrderAsync(createOrderDto);
             return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
         }
