@@ -24,6 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Venice.ServiceDefaults\Venice.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\Venice.Application\Venice.Application.csproj" />
 		<ProjectReference Include="..\Venice.Infra\Venice.Infra.csproj" />
 	</ItemGroup>
