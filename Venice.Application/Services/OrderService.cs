@@ -19,40 +19,49 @@ public class OrderService(IOrderRepository _orderRepository,
     public async Task<OrderResponseDto> CreateOrderAsync(CreateOrderDto createOrderDto, CancellationToken cancellationToken)
     {
 
-        logger.LogInformation("Creating order for client {ClientId} with {ItemCount} items",
-            createOrderDto.ClienteId, createOrderDto.Itens.Count);
+        Guid rollbackGuidMongotryError = Guid.Empty;
 
-        using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        try
+        {
+            logger.LogInformation("Creating order for client {ClientId} with {ItemCount} items",
+                createOrderDto.ClienteId, createOrderDto.Itens.Count);
 
-        var itens = createOrderDto.Itens
-                                  .Select(i => new OrderItem(i.Produto, i.Quantidade, i.PrecoUnitario))
-                                  .ToList();
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-        var order = new Order(createOrderDto.ClienteId, itens);
+            var order = new Order(createOrderDto.ClienteId, [.. createOrderDto.Itens.Select(i => new OrderItem(i.Produto, i.Quantidade, i.PrecoUnitario))]);
 
-        var savedOrder = await _orderRepository.CreateAsync(order, cancellationToken);
+            var savedOrder = await _orderRepository.CreateAsync(order, cancellationToken);
 
-        logger.LogInformation("Order {OrderId} created with total value {TotalValue}",
-            savedOrder.Id, savedOrder.ValorTotal);
+            logger.LogInformation("Order {OrderId} created with total value {TotalValue}",
+                savedOrder.Id, savedOrder.ValorTotal);
 
-        await _orderItemRepository.SaveItemsAsync(savedOrder.Id, itens, cancellationToken);
+            await _orderItemRepository.SaveItemsAsync(savedOrder.Id, [.. createOrderDto.Itens.Select(i => new OrderItem(i.Produto, i.Quantidade, i.PrecoUnitario))], cancellationToken);
 
-        logger.LogInformation("Order {OrderId} created successfully", savedOrder.Id);
+            rollbackGuidMongotryError = savedOrder.Id;
 
-        var evento = new CreateOrderEvent(
-            savedOrder.Id,
-            savedOrder.ClienteId,
-            savedOrder.ValorTotal,
-            savedOrder.Data,
-            itens);
+            logger.LogInformation("Order {OrderId} created successfully", savedOrder.Id);
 
-        await _eventPublisher.PublishAsync(evento);
+            var evento = new CreateOrderEvent(
+                savedOrder.Id,
+                savedOrder.ClienteId,
+                savedOrder.ValorTotal,
+                savedOrder.Data,
+                [.. createOrderDto.Itens.Select(i => new OrderItem(i.Produto, i.Quantidade, i.PrecoUnitario))]);
 
-        logger.LogInformation("Order creation event published for order {OrderId}", savedOrder.Id);
+            await _eventPublisher.PublishAsync(evento);
 
-        scope.Complete();
+            logger.LogInformation("Order creation event published for order {OrderId}", savedOrder.Id);
 
-        return OrderMapper.ToDto(savedOrder, itens);
+            scope.Complete();
+
+            return OrderMapper.ToDto(savedOrder, [.. createOrderDto.Itens.Select(i => new OrderItem(i.Produto, i.Quantidade, i.PrecoUnitario))]);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Erro ao criar pedido para cliente {Error}", rollbackGuidMongotryError);
+            await _orderItemRepository.RemoveAsync(rollbackGuidMongotryError, CancellationToken.None);
+            throw new ArgumentException("Erro ao salvar no banco de dados, as informações não persistiram no repositório.");
+        }
     }
 
     public async Task<OrderResponseDto?> GetOrderByIdAsync(Guid id, CancellationToken cancellationToken)

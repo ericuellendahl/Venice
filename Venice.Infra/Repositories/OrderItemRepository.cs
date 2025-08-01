@@ -22,5 +22,12 @@ namespace Venice.Infra.Repositories
             var documents = itens.Select(item => OrderItemDocument.FromDomain(orderId, item));
             await _context.OrderItems.InsertManyAsync(documents, null, cancellationToken);
         }
+
+        public async Task RemoveAsync(Guid orderId, CancellationToken cancellationToken)
+        {
+            var filter = Builders<OrderItemDocument>.Filter.Eq(x => x.OrderId, orderId);
+
+            await _context.OrderItems.DeleteOneAsync(filter, null, cancellationToken);
+        }
     }
 }

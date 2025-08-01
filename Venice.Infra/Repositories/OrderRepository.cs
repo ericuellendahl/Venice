@@ -26,5 +26,11 @@ namespace Venice.Infra.Repositories
             _context.Orders.Update(order);
             await _context.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task RemoveAsync(Order order, CancellationToken cancellationToken)
+        {
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
 }
