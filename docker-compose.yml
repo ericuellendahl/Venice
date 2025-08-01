@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  postgresql:
+    image: postgres:16-alpine
+    container_name: venice-postgresql
+    environment:
+      POSTGRES_DB: veniceorders
+      POSTGRES_USER: venice
+      POSTGRES_PASSWORD: password123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:7.0
+    container_name: venice-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: venice-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: venice-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  venice-orders-api:
+    build:
+      context: .
+      dockerfile: src/VeniceOrders.API/Dockerfile
+    container_name: venice-orders-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__PostgreSQL=Host=postgresql;Port=5432;Database=veniceorders;Username=venice;Password=password123;
+      - ConnectionStrings__MongoDB=mongodb://admin:password123@mongodb:27017
+      - ConnectionStrings__Redis=redis:6379
+      - ConnectionStrings__RabbitMQ=rabbitmq
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresql
+      - mongodb
+      - redis
+      - rabbitmq
+
+volumes:
+  postgresql_data:
+  mongodb_data:
+  redis_data:
+  rabbitmq_data:
