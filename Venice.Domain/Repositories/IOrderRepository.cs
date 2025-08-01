@@ -4,7 +4,7 @@ namespace Venice.Domain.Repositories;
 
 public interface IOrderRepository
 {
-    Task<Order?> GetByIdAsync(Guid id);
-    Task<Order> CreateAsync(Order order);
-    Task UpdateAsync(Order order);
+    Task<Order?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<Order> CreateAsync(Order order, CancellationToken cancellationToken);
+    Task UpdateAsync(Order order, CancellationToken cancellationToken);
 }

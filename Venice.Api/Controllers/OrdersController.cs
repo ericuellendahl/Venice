@@ -13,14 +13,14 @@ public class OrdersController(IOrderService _orderService) : ControllerBase
     [ProducesResponseType(typeof(CreateOrderDto), 201)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
-    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto createOrderDto)
+    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto createOrderDto, CancellationToken cancellationToken)
     {
         try
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var order = await _orderService.CreateOrderAsync(createOrderDto);
+            var order = await _orderService.CreateOrderAsync(createOrderDto, cancellationToken);
             return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
         }
         catch (ArgumentException ex)
@@ -37,11 +37,11 @@ public class OrdersController(IOrderService _orderService) : ControllerBase
     [ProducesResponseType(typeof(CreateOrderDto), 200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public async Task<IActionResult> GetOrder(Guid id)
+    public async Task<IActionResult> GetOrder(Guid id, CancellationToken cancellationToken)
     {
         try
         {
-            var order = await _orderService.GetOrderByIdAsync(id);
+            var order = await _orderService.GetOrderByIdAsync(id, cancellationToken);
             if (order is null)
                 return NotFound();
 

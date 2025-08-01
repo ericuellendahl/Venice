@@ -57,11 +57,11 @@ namespace Venice.Tests.OrderServices
         });
 
             _orderRepositoryMock
-                .Setup(x => x.CreateAsync(It.IsAny<Order>()))
+                .Setup(x => x.CreateAsync(It.IsAny<Order>(), CancellationToken.None))
                 .ReturnsAsync(savedOrder);
 
             _orderItemRepositoryMock
-                .Setup(x => x.SaveItemsAsync(It.IsAny<Guid>(), It.IsAny<List<OrderItem>>()))
+                .Setup(x => x.SaveItemsAsync(It.IsAny<Guid>(), It.IsAny<List<OrderItem>>(), CancellationToken.None))
                 .Returns(Task.CompletedTask);
 
             _eventPublisherMock
@@ -69,7 +69,7 @@ namespace Venice.Tests.OrderServices
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = await _orderService.CreateOrderAsync(createOrderDto);
+            var result = await _orderService.CreateOrderAsync(createOrderDto, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -77,8 +77,8 @@ namespace Venice.Tests.OrderServices
             Assert.Equal(46.00m, result.ValorTotal); // (2 * 10.50) + (1 * 25.00)
             Assert.Equal(2, result.Itens.Count);
 
-            _orderRepositoryMock.Verify(x => x.CreateAsync(It.IsAny<Order>()), Times.Once);
-            _orderItemRepositoryMock.Verify(x => x.SaveItemsAsync(It.IsAny<Guid>(), It.IsAny<List<OrderItem>>()), Times.Once);
+            _orderRepositoryMock.Verify(x => x.CreateAsync(It.IsAny<Order>(), CancellationToken.None), Times.Once);
+            _orderItemRepositoryMock.Verify(x => x.SaveItemsAsync(It.IsAny<Guid>(), It.IsAny<List<OrderItem>>(), CancellationToken.None), Times.Once);
             _eventPublisherMock.Verify(x => x.PublishAsync(It.IsAny<CreateOrderEvent>()), Times.Once);
         }
 
@@ -105,7 +105,7 @@ namespace Venice.Tests.OrderServices
                 .ReturnsAsync(cachedOrder);
 
             // Act
-            var result = await _orderService.GetOrderByIdAsync(orderId);
+            var result = await _orderService.GetOrderByIdAsync(orderId, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -113,7 +113,7 @@ namespace Venice.Tests.OrderServices
             Assert.Equal(100.00m, result.ValorTotal);
 
             _cacheServiceMock.Verify(x => x.GetAsync<OrderResponseDto>($"order:{orderId}"), Times.Once);
-            _orderRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Never);
+            _orderRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), CancellationToken.None), Times.Never);
         }
 
         [Fact]
@@ -137,11 +137,11 @@ namespace Venice.Tests.OrderServices
                 .ReturnsAsync((OrderResponseDto?)null);
 
             _orderRepositoryMock
-                .Setup(x => x.GetByIdAsync(orderId))
+                .Setup(x => x.GetByIdAsync(orderId, CancellationToken.None))
                 .ReturnsAsync(order);
 
             _orderItemRepositoryMock
-                .Setup(x => x.GetByOrderIdAsync(orderId))
+                .Setup(x => x.GetByOrderIdAsync(orderId, CancellationToken.None))
                 .ReturnsAsync(orderItems);
 
             _cacheServiceMock
@@ -149,15 +149,15 @@ namespace Venice.Tests.OrderServices
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = await _orderService.GetOrderByIdAsync(orderId);
+            var result = await _orderService.GetOrderByIdAsync(orderId, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(clienteId, result.ClienteId);
 
             _cacheServiceMock.Verify(x => x.GetAsync<OrderResponseDto>($"order:{orderId}"), Times.Once);
-            _orderRepositoryMock.Verify(x => x.GetByIdAsync(orderId), Times.Once);
-            _orderItemRepositoryMock.Verify(x => x.GetByOrderIdAsync(orderId), Times.Once);
+            _orderRepositoryMock.Verify(x => x.GetByIdAsync(orderId, CancellationToken.None), Times.Once);
+            _orderItemRepositoryMock.Verify(x => x.GetByOrderIdAsync(orderId, CancellationToken.None), Times.Once);
             _cacheServiceMock.Verify(x => x.SetAsync($"order:{orderId}", It.IsAny<OrderResponseDto>(), TimeSpan.FromMinutes(2)), Times.Once);
         }
     }

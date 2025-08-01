@@ -9,22 +9,22 @@ namespace Venice.Infra.Repositories
     {
         private readonly VeniceDbContext _context = context;
 
-        public async Task<Order?> GetByIdAsync(Guid id)
+        public async Task<Order?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
+            return await _context.Orders.FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
         }
 
-        public async Task<Order> CreateAsync(Order order)
+        public async Task<Order> CreateAsync(Order order, CancellationToken cancellationToken)
         {
             _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return order;
         }
 
-        public async Task UpdateAsync(Order order)
+        public async Task UpdateAsync(Order order, CancellationToken cancellationToken)
         {
             _context.Orders.Update(order);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -4,6 +4,6 @@ namespace Venice.Application.Interfaces;
 
 public interface IOrderService
 {
-    Task<OrderResponseDto> CreateOrderAsync(CreateOrderDto createOrderDto);
-    Task<OrderResponseDto?> GetOrderByIdAsync(Guid id);
+    Task<OrderResponseDto> CreateOrderAsync(CreateOrderDto createOrderDto, CancellationToken cancellationToken);
+    Task<OrderResponseDto?> GetOrderByIdAsync(Guid id, CancellationToken cancellationToken);
 }

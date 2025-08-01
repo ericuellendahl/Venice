@@ -16,7 +16,7 @@ public class OrderService(IOrderRepository _orderRepository,
                           ICacheRepository _cacheRepository,
                           ILogger<OrderService> logger) : IOrderService
 {
-    public async Task<OrderResponseDto> CreateOrderAsync(CreateOrderDto createOrderDto)
+    public async Task<OrderResponseDto> CreateOrderAsync(CreateOrderDto createOrderDto, CancellationToken cancellationToken)
     {
 
         logger.LogInformation("Creating order for client {ClientId} with {ItemCount} items",
@@ -30,12 +30,12 @@ public class OrderService(IOrderRepository _orderRepository,
 
         var order = new Order(createOrderDto.ClienteId, itens);
 
-        var savedOrder = await _orderRepository.CreateAsync(order);
+        var savedOrder = await _orderRepository.CreateAsync(order, cancellationToken);
 
         logger.LogInformation("Order {OrderId} created with total value {TotalValue}",
             savedOrder.Id, savedOrder.ValorTotal);
 
-        await _orderItemRepository.SaveItemsAsync(savedOrder.Id, itens);
+        await _orderItemRepository.SaveItemsAsync(savedOrder.Id, itens, cancellationToken);
 
         logger.LogInformation("Order {OrderId} created successfully", savedOrder.Id);
 
@@ -55,7 +55,7 @@ public class OrderService(IOrderRepository _orderRepository,
         return OrderMapper.ToDto(savedOrder, itens);
     }
 
-    public async Task<OrderResponseDto?> GetOrderByIdAsync(Guid id)
+    public async Task<OrderResponseDto?> GetOrderByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var cacheKey = $"order:{id}";
         var cachedOrder = await _cacheRepository.GetAsync<OrderResponseDto>(cacheKey);
@@ -66,13 +66,13 @@ public class OrderService(IOrderRepository _orderRepository,
             return cachedOrder;
         }
 
-        var order = await _orderRepository.GetByIdAsync(id);
+        var order = await _orderRepository.GetByIdAsync(id, cancellationToken);
 
         logger.LogInformation("Retrieving order {OrderId} from database", id);
 
         if (order is null) return null;
 
-        var itens = await _orderItemRepository.GetByOrderIdAsync(id);
+        var itens = await _orderItemRepository.GetByOrderIdAsync(id, cancellationToken);
 
         var response = OrderMapper.ToDto(order, itens);
 
