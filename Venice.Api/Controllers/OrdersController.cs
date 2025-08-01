@@ -27,9 +27,9 @@ public class OrdersController(IOrderService _orderService) : ControllerBase
         {
             return BadRequest(ex.Message);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return BadRequest("Erro interno do servidor");
+            return BadRequest($"Erro interno do servidor {ex.Message}");
         }
     }
 
