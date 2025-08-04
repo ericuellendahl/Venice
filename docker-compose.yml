@@ -1,70 +1,77 @@
 version: '3.8'
 
 services:
-  postgresql:
-    image: postgres:16-alpine
-    container_name: venice-postgresql
+  venice.api:
+    build:
+      context: .
+      dockerfile: /Venice.Api/Dockerfile
+    container_name: venice-api
+    ports:
+      - "8080:8080"
+      - "8081:8081"
     environment:
-      POSTGRES_DB: veniceorders
-      POSTGRES_USER: venice
-      POSTGRES_PASSWORD: password123
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on:
+      - postgres
+      - mongo
+      - redis
+      - rabbitmq
+    networks:
+      - local-network
+
+  postgres:
+    image: postgres:16
+    container_name: local-postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: NwCQCjHJPebAaf4X
     ports:
       - "5432:5432"
     volumes:
-      - postgresql_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - local-network
 
-  mongodb:
-    image: mongo:7.0
-    container_name: venice-mongodb
+  mongo:
+    image: mongo:7
+    container_name: local-mongo
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_ROOT_USERNAME: ericuellendahl
+      MONGO_INITDB_ROOT_PASSWORD: SZ5x7qHNohiSrhSK
     ports:
       - "27017:27017"
     volumes:
-      - mongodb_data:/data/db
+      - mongo_data:/data/db
+    networks:
+      - local-network
 
   redis:
-    image: redis:7.2-alpine
-    container_name: venice-redis
+    image: redis:7
+    container_name: local-redis
+    command: redis-server --requirepass VUSN0cFvyJ5ghEdMgiSqoF5lLHS2YylF
     ports:
       - "6379:6379"
-    volumes:
-      - redis_data:/data
+    networks:
+      - local-network
 
   rabbitmq:
     image: rabbitmq:3.12-management
-    container_name: venice-rabbitmq
+    container_name: local-rabbitmq
     environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: password123
+      RABBITMQ_DEFAULT_USER: xhvmtpxe
+      RABBITMQ_DEFAULT_PASS: rQWm0ty1FaRypD5gyZKrLckwNejqt0VY
+      RABBITMQ_DEFAULT_VHOST: xhvmtpxe
     ports:
       - "5672:5672"
       - "15672:15672"
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-
-  venice-orders-api:
-    build:
-      context: .
-      dockerfile: src/VeniceOrders.API/Dockerfile
-    container_name: venice-orders-api
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__PostgreSQL=Host=postgresql;Port=5432;Database=veniceorders;Username=venice;Password=password123;
-      - ConnectionStrings__MongoDB=mongodb://admin:password123@mongodb:27017
-      - ConnectionStrings__Redis=redis:6379
-      - ConnectionStrings__RabbitMQ=rabbitmq
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgresql
-      - mongodb
-      - redis
-      - rabbitmq
+    networks:
+      - local-network
 
 volumes:
-  postgresql_data:
-  mongodb_data:
-  redis_data:
-  rabbitmq_data:
+  postgres_data:
+  mongo_data:
+
+networks:
+  local-network:
+    driver: bridge
