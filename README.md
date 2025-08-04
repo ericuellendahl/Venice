@@ -166,9 +166,14 @@ Após a criação do pedido, um evento `PedidoCriadoEvent` é publicado no Rabbi
 ### Opção 1: Com Docker Compose (Recomendado)
 
 ```bash
-# Clonar o repositório
-git clone [repository-url]
-cd VeniceOrders
+Na pasta do projeto executar o seguinte comandos
+
+c:\...\Venice
+
+docker-compose up --build
+
+http://localhost:8080/swagger/index.html
+
 
 ```
 

@@ -1,0 +1,76 @@
+
+services:
+  venice.api:
+    build:
+      context: .
+      dockerfile: /Venice.Api/Dockerfile
+    container_name: venice-api
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on:
+      - postgres
+      - mongo
+      - redis
+      - rabbitmq
+    networks:
+      - local-network
+
+  postgres:
+    image: postgres:16
+    container_name: local-postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: NwCQCjHJPebAaf4X
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - local-network
+
+  mongo:
+    image: mongo:7
+    container_name: local-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ericuellendahl
+      MONGO_INITDB_ROOT_PASSWORD: SZ5x7qHNohiSrhSK
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - local-network
+
+  redis:
+    image: redis:7
+    container_name: local-redis
+    command: redis-server --requirepass VUSN0cFvyJ5ghEdMgiSqoF5lLHS2YylF
+    ports:
+      - "6379:6379"
+    networks:
+      - local-network
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: local-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: xhvmtpxe
+      RABBITMQ_DEFAULT_PASS: rQWm0ty1FaRypD5gyZKrLckwNejqt0VY
+      RABBITMQ_DEFAULT_VHOST: xhvmtpxe
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - local-network
+
+volumes:
+  postgres_data:
+  mongo_data:
+
+networks:
+  local-network:
+    driver: bridge
