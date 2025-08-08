@@ -4,6 +4,8 @@ using Venice.Infra.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -22,6 +24,8 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructurePersistence(builder.Configuration);
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {
