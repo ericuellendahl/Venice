@@ -16,6 +16,8 @@ COPY ["Venice.Api/Venice.Api.csproj", "Venice.Api/"]
 COPY ["Venice.Application/Venice.Application.csproj", "Venice.Application/"]
 COPY ["Venice.Domain/Venice.Domain.csproj", "Venice.Domain/"]
 COPY ["Venice.Infra/Venice.Infra.csproj", "Venice.Infra/"]
+COPY ["Venice.ServiceDefaults/Venice.ServiceDefaults.csproj", "Venice.ServiceDefaults/"]
+COPY ["Venice.AppHost/Venice.AppHost.csproj", "Venice.AppHost/"]
 RUN dotnet restore "./Venice.Api/Venice.Api.csproj"
 COPY . .
 WORKDIR "/src/Venice.Api"
